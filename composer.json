@@ -31,7 +31,8 @@
     },
     "autoload": {
         "psr-4": {
-            "NikolayBalkandzhiyski\\BladeStarterKit\\": "src/"
+            "NikolayBalkandzhiyski\\BladeStarterKit\\": "src/",
+            "App\\": "app/"
         }
     },
     "autoload-dev": {
@@ -41,18 +42,17 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "NikolayBalkandzhiyski\\BladeStarterKit\\ComposerScripts::postAutoloadDump"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php -r \"file_exists('./artisan') && exec('php artisan vendor:publish --tag=laravel-assets --ansi --force')\""
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
-            "@php artisan blade-kit:install",
+            "@php -r \"file_exists('./artisan') && exec('php artisan key:generate --ansi')\"",
+            "@php -r \"file_exists('./artisan') && exec('php artisan blade-kit:install')\"",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "dev": [

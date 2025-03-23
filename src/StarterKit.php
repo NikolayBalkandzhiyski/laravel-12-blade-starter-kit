@@ -25,6 +25,9 @@ class StarterKit
      */
     public function install(): void
     {
+        // Ensure we have a basic application structure
+        CreateApplication::ensure();
+
         // Copy stubs
         $this->files->copyDirectory(__DIR__.'/../stubs', base_path());
 

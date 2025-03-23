@@ -20,10 +20,13 @@ class ServiceProvider extends BaseServiceProvider
             });
         }
 
-        // Register commands
-        $this->commands([
-            InstallCommand::class,
-        ]);
+        // Only register commands if we're in a Laravel application
+        if (file_exists(base_path('artisan'))) {
+            // Register commands
+            $this->commands([
+                InstallCommand::class,
+            ]);
+        }
     }
 
     /**

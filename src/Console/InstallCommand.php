@@ -47,6 +47,15 @@ class InstallCommand extends Command
      */
     public function handle(): int
     {
+        // Check if Laravel is fully installed and ready to run
+        if (! $this->isLaravelReady()) {
+            $this->error("Laravel doesn't seem to be fully installed or ready.");
+            $this->info('Try running: composer require laravel/framework');
+            $this->info('Or use the direct installer: php vendor/nikolaybalkandzhiyski/laravel-12-blade-starter-kit/direct-install.php');
+
+            return self::FAILURE;
+        }
+
         // Starter kit banner
         $this->components->info('
     ____  __           __         _____ __             __           __ __ _ __
@@ -57,29 +66,58 @@ class InstallCommand extends Command
                        /_____/
         ');
 
-        // 1. Ensure we have the basic app structure
-        $this->components->info('Preparing application scaffolding...');
-        $this->ensureApplicationExists();
+        try {
+            // 1. Ensure we have the basic app structure
+            $this->components->info('Preparing application scaffolding...');
+            $this->ensureApplicationExists();
 
-        // 2. Publish the stubs
-        $this->components->info('Publishing starter kit resources...');
-        $this->publishStubs();
+            // 2. Publish the stubs
+            $this->components->info('Publishing starter kit resources...');
+            $this->publishStubs();
 
-        // 3. Update package.json
-        $this->updateNodePackages();
+            // 3. Update package.json
+            $this->updateNodePackages();
 
-        // 4. Configure Tailwind
-        $this->installTailwindConfiguration();
+            // 4. Configure Tailwind
+            $this->installTailwindConfiguration();
 
-        // 5. Install NPM dependencies if requested
-        if ($this->confirm('Would you like to install and build your frontend dependencies now?', true)) {
-            $this->installNpmDependencies();
+            // 5. Install NPM dependencies if requested
+            if ($this->confirm('Would you like to install and build your frontend dependencies now?', true)) {
+                $this->installNpmDependencies();
+            }
+
+            // 6. Show final message
+            $this->components->info((new StarterKit)->installationSummary());
+
+            return self::SUCCESS;
+        } catch (\Exception $e) {
+            $this->error('Error installing Blade Starter Kit: '.$e->getMessage());
+
+            if ($this->getOutput()->isVerbose()) {
+                $this->error($e->getTraceAsString());
+            }
+
+            return self::FAILURE;
+        }
+    }
+
+    /**
+     * Check if Laravel is fully installed and functional
+     */
+    private function isLaravelReady(): bool
+    {
+        // Check for key Laravel files and classes
+        if (! file_exists(base_path('bootstrap/app.php'))) {
+            return false;
         }
 
-        // 6. Show final message
-        $this->components->info((new StarterKit)->installationSummary());
-
-        return self::SUCCESS;
+        // Check if we can instantiate the Laravel application
+        try {
+            // Just check if the class exists, don't try to load or instantiate it
+            return class_exists('Illuminate\Foundation\Application');
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**

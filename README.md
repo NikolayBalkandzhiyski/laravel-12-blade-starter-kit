@@ -82,25 +82,30 @@ A simple, clean starter kit with Blade templates, AlpineJS, and traditional form
 You can install this starter kit in a new Laravel project using Composer:
 
 ```bash
+# Create a new Laravel project
 composer create-project laravel/laravel my-project
 cd my-project
+
+# Install Laravel dependencies first
+composer require laravel/framework
+
+# Then install the starter kit
 composer require nikolaybalkandzhiyski/laravel-12-blade-starter-kit
 php artisan blade-kit:install
 ```
 
-Or use it with an existing Laravel 12 project:
+### Troubleshooting Installation
 
+If you see an error like "Class Illuminate\Foundation\Application not found", it means Laravel isn't fully installed yet. Try the following:
+
+1. Make sure Laravel is fully installed:
 ```bash
-composer require nikolaybalkandzhiyski/laravel-12-blade-starter-kit
-php artisan blade-kit:install
+composer require laravel/framework
 ```
 
-### Manual Installation
-
-If you encounter any issues with the automatic installation, you can use the manual installer:
-
+2. Use the direct installer script instead:
 ```bash
-php vendor/nikolaybalkandzhiyski/laravel-12-blade-starter-kit/install.php
+php vendor/nikolaybalkandzhiyski/laravel-12-blade-starter-kit/direct-install.php
 ```
 
 After installation, compile your assets:

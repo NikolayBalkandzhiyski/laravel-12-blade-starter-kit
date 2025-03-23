@@ -1,38 +1,29 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
-    "name": "nikolaybalkandzhiyski/laravel-12-blade-starter-kit",
-    "type": "library",
-    "description": "A Laravel 12 starter kit with Blade templates and authentication",
-    "keywords": [
-        "laravel",
-        "blade",
-        "starter kit",
-        "authentication"
-    ],
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Nikolay Balkandzhiyski",
-            "email": "nikolay.balkandzhiyski@gmail.com"
-        }
-    ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^12.0",
-        "illuminate/filesystem": "^12.0"
+        "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
-        "laravel/sail": "^1.41",
+        "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "nunomaduro/collision": "^8.0",
+        "phpunit/phpunit": "^10.4",
+        "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
         "psr-4": {
-            "NikolayBalkandzhiyski\\BladeStarterKit\\": "src/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
@@ -42,22 +33,22 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "NikolayBalkandzhiyski\\BladeStarterKit\\ComposerScripts::postAutoloadDump"
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php -r \"file_exists('./artisan') && exec('php artisan key:generate --ansi')\"",
-            "@php -r \"file_exists('./artisan') && exec('php artisan blade-kit:install')\"",
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "@php artisan key:generate --ansi"
         ]
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "NikolayBalkandzhiyski\\BladeStarterKit\\ServiceProvider"
-            ]
+            "dont-discover": []
         }
     },
     "config": {
@@ -69,6 +60,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

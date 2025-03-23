@@ -12,20 +12,16 @@ class Kernel extends ConsoleKernel
      *
      * These schedules are run in the console and are used to perform
      * various tasks such as sending email reminders, cleaning up old data, etc.
-     *
-     * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
 

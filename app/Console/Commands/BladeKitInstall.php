@@ -13,11 +13,21 @@ class BladeKitInstall extends Command
 
     public function handle()
     {
-        $starterKit = new StarterKit;
-        $starterKit->install();
+        $this->info('Installing Blade Starter Kit via local command...');
 
-        $this->info($starterKit->installationSummary());
+        try {
+            $starterKit = new StarterKit;
+            $starterKit->install();
 
-        return self::SUCCESS;
+            $this->info($starterKit->installationSummary());
+
+            return self::SUCCESS;
+        } catch (\Exception $e) {
+            $this->error('Error installing Blade Starter Kit: '.$e->getMessage());
+            $this->newLine();
+            $this->error($e->getTraceAsString());
+
+            return self::FAILURE;
+        }
     }
 }

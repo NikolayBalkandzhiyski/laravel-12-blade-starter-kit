@@ -8,12 +8,25 @@ use RuntimeException;
 class StarterKit
 {
     /**
+     * The filesystem instance.
+     */
+    protected Filesystem $files;
+
+    /**
+     * Create a new StarterKit instance.
+     */
+    public function __construct()
+    {
+        $this->files = new Filesystem;
+    }
+
+    /**
      * Install the starter kit into the application.
      */
     public function install(): void
     {
         // Copy stubs
-        (new Filesystem)->copyDirectory(__DIR__.'/../stubs', base_path());
+        $this->files->copyDirectory(__DIR__.'/../stubs', base_path());
 
         // Update package.json
         $this->updateNodePackages(function ($packages) {
@@ -22,6 +35,7 @@ class StarterKit
                 'autoprefixer' => '^10.4.2',
                 'postcss' => '^8.4.6',
                 'tailwindcss' => '^3.1.0',
+                '@tailwindcss/forms' => '^0.5.2',
                 ...$packages,
             ];
         });
@@ -42,11 +56,11 @@ class StarterKit
      */
     protected function updateNodePackages(callable $callback): void
     {
-        if (! file_exists(base_path('package.json'))) {
+        if (! $this->files->exists(base_path('package.json'))) {
             return;
         }
 
-        $packages = json_decode(file_get_contents(base_path('package.json')), true);
+        $packages = json_decode($this->files->get(base_path('package.json')), true);
 
         $packages['devDependencies'] = $callback(
             $packages['devDependencies'] ?? []
@@ -54,7 +68,7 @@ class StarterKit
 
         ksort($packages['devDependencies']);
 
-        file_put_contents(
+        $this->files->put(
             base_path('package.json'),
             json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
         );
@@ -65,7 +79,7 @@ class StarterKit
      */
     protected function replaceInFile(string $search, string $replace, string $path): void
     {
-        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
+        $this->files->put($path, str_replace($search, $replace, $this->files->get($path)));
     }
 
     /**

@@ -67,112 +67,53 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 # Laravel 12 Blade Starter Kit
 
-A simple, clean starter kit for Laravel 12 applications using Blade templates and traditional form-based authentication.
+A simple, clean starter kit with Blade templates, AlpineJS, and traditional form-based authentication for Laravel 12.
 
 ## Features
 
-- 🔐 Complete authentication system (login, register, logout)
-- 🔪 Blade templating with well-organized components
-- 🎨 TailwindCSS styling with AlpineJS for interactivity
-- 📱 Responsive layouts out-of-the-box
-- 🏗️ Simple, clean architecture following Laravel best practices
+- Modern Blade templates
+- AlpineJS for interactive components
+- Tailwind CSS for styling
+- Traditional form-based authentication
+- Laravel 12.2+ compatible
 
 ## Installation
 
-### Option 1: New Laravel Project
+You can install this starter kit in a new Laravel project using Composer:
 
-You can install this starter kit when creating a new Laravel application using the `--using` flag with the Laravel installer:
-
-```
-laravel new my-app --using=nikolaybalkandzhiyski/laravel-12-blade-starter-kit
-```
-
-### Option 2: Existing Laravel Project
-
-To install into an existing Laravel 12 application:
-
-1. Require the package via Composer:
-
-```
+```bash
+composer create-project laravel/laravel my-project
+cd my-project
 composer require nikolaybalkandzhiyski/laravel-12-blade-starter-kit
-```
-
-2. Run the installation command:
-
-```
 php artisan blade-kit:install
 ```
 
-## Post-Installation Setup
+Or use it with an existing Laravel 12 project:
 
-After installation, you'll need to:
-
-1. Set up your database connection in `.env`
-
-2. Run migrations:
-```
-php artisan migrate
+```bash
+composer require nikolaybalkandzhiyski/laravel-12-blade-starter-kit
+php artisan blade-kit:install
 ```
 
-3. Install and build frontend assets:
-```
+After installation, compile your assets:
+
+```bash
 npm install
 npm run dev
 ```
 
-## Usage
-
-### Authentication
-
-The starter kit includes complete authentication with:
-- Login (`/login`)
-- Registration (`/register`)
-- Logout
-- Dashboard page for authenticated users (`/`)
-
-### Components
-
-The kit provides a set of Blade components:
-- `<x-application-logo>` - Main application logo
-- `<x-auth-session-status>` - Displays session status messages
-- `<x-dropdown>` and `<x-dropdown-link>` - For dropdown menus
-- `<x-input-error>` - Displays validation errors
-- `<x-input-label>` - Form input labels
-- `<x-nav-link>` - Navigation links with active state
-- `<x-primary-button>` - Primary action button
-- `<x-text-input>` - Text input fields
-
-### Layouts
-
-- `app.blade.php` - Main authenticated layout with navigation
-- `guest.blade.php` - Layout for unauthenticated pages
-
-### Customization
-
-#### Styling
-
-This starter kit uses TailwindCSS. You can customize the design by:
-
-1. Modifying the Tailwind configuration in `tailwind.config.js`
-2. Updating component classes in the Blade component files
-3. Adding custom CSS in `resources/css/app.css`
-
-#### Views
-
-All views are located in `resources/views`. You can:
-- Modify `layouts/app.blade.php` to change the main layout
-- Update authentication views in the `auth` directory
-- Customize the dashboard page in `dashboard.blade.php`
-
-#### Routes
-
-Routes are defined in `routes/web.php`. You can add additional routes or modify existing ones to fit your needs.
-
 ## What's Included
 
-- **Authentication Controllers**: Login, Registration, and Logout
-- **Dashboard Controller**: For the main authenticated page
-- **Blade Components**: Common UI components like buttons, inputs, dropdown menus
-- **Layouts**: App and Guest layouts for different contexts
-- **TailwindCSS Configuration**: Ready to use with sensible defaults
-- **AlpineJS Integration**: For client-side interactivity
+- Authentication (login, register, logout)
+- Dashboard page
+- Profile page
+- Responsive layout with Tailwind CSS
+- AlpineJS for interactive components
+
+## Configuration
+
+This starter kit doesn't require any additional configuration out of the box.
+
+## License
+
+This starter kit is open-sourced software licensed under the [MIT license](LICENSE.md).

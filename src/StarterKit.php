@@ -34,11 +34,11 @@ class StarterKit
         // Update package.json
         $this->updateNodePackages(function ($packages) {
             return [
-                'alpinejs' => '^3.4.2',
-                'autoprefixer' => '^10.4.2',
-                'postcss' => '^8.4.6',
-                'tailwindcss' => '^3.1.0',
-                '@tailwindcss/forms' => '^0.5.2',
+                'alpinejs' => '^3.12.3',
+                'autoprefixer' => '^10.4.16',
+                'postcss' => '^8.4.31',
+                'tailwindcss' => '^3.3.5',
+                '@tailwindcss/forms' => '^0.5.7',
                 ...$packages,
             ];
         });
@@ -168,5 +168,19 @@ EOF;
     public function installationSummary(): string
     {
         return 'Blade starter kit installed successfully! Make sure to run `npm install && npm run dev` to compile your assets.';
+    }
+
+    /**
+     * Return the available features for this starter kit.
+     */
+    public function features(): array
+    {
+        return [
+            'blade' => true,
+            'alpinejs' => true,
+            'tailwind' => true,
+            'auth' => true,
+            'dark-mode' => true,
+        ];
     }
 }

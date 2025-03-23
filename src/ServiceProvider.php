@@ -19,17 +19,6 @@ class ServiceProvider extends BaseServiceProvider
                 return new Filesystem;
             });
         }
-
-        // Only register commands if we're in a Laravel application
-        if (file_exists(base_path('artisan'))) {
-            try {
-                $this->commands([
-                    InstallCommand::class,
-                ]);
-            } catch (\Exception $e) {
-                // Gracefully handle any errors during command registration
-            }
-        }
     }
 
     /**
@@ -38,10 +27,14 @@ class ServiceProvider extends BaseServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            // Publish stubs
+            $this->commands([
+                InstallCommand::class,
+            ]);
+
+            // Publish stubs using the new group parameter
             $this->publishes([
                 __DIR__.'/../stubs' => base_path(),
-            ], 'blade-starter-kit-stubs');
+            ], ['blade-starter-kit-stubs', 'laravel-assets']);
         }
     }
 }

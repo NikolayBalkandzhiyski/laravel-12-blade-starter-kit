@@ -1,17 +1,24 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "nikolaybalkandzhiyski/laravel-12-blade-starter-kit",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A Laravel 12 starter kit with Blade templates and authentication",
     "keywords": [
         "laravel",
-        "framework"
+        "blade",
+        "starter kit",
+        "authentication"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Nikolay Balkandzhiyski",
+            "email": "your-email@example.com"
+        }
+    ],
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/framework": "^12.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -24,9 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "NikolayBalkandzhiyski\\BladeStarterKit\\": "src/"
         }
     },
     "autoload-dev": {
@@ -57,7 +62,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "providers": [
+                "NikolayBalkandzhiyski\\BladeStarterKit\\ServiceProvider"
+            ]
         }
     },
     "config": {
@@ -69,6 +76,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

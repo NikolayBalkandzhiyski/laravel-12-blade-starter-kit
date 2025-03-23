@@ -12,7 +12,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->commands([
+            InstallCommand::class,
+        ]);
     }
 
     /**
@@ -21,10 +23,6 @@ class ServiceProvider extends BaseServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                InstallCommand::class,
-            ]);
-
             // Publish stubs
             $this->publishes([
                 __DIR__.'/../stubs' => base_path(),

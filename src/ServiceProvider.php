@@ -24,6 +24,11 @@ class ServiceProvider extends BaseServiceProvider
             $this->commands([
                 InstallCommand::class,
             ]);
+
+            // Publish stubs
+            $this->publishes([
+                __DIR__.'/../stubs' => base_path(),
+            ], 'blade-starter-kit-stubs');
         }
     }
 }

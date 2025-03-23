@@ -120,4 +120,28 @@ Route::middleware('auth')->group(function () {
 });
 EOF;
     }
+
+    /**
+     * Get the name of the starter kit.
+     */
+    public function name(): string
+    {
+        return 'Laravel 12 Blade Starter Kit';
+    }
+
+    /**
+     * Get the description of the starter kit.
+     */
+    public function description(): string
+    {
+        return 'A simple, clean starter kit with Blade templates and traditional form-based authentication.';
+    }
+
+    /**
+     * Get the starter kit installation summary.
+     */
+    public function installationSummary(): string
+    {
+        return 'Blade starter kit installed successfully! Make sure to run `npm install && npm run dev` to compile your assets.';
+    }
 }

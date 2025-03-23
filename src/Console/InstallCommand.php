@@ -3,6 +3,8 @@
 namespace NikolayBalkandzhiyski\BladeStarterKit\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 use NikolayBalkandzhiyski\BladeStarterKit\StarterKit;
 
 class InstallCommand extends Command
@@ -19,40 +21,83 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Install the Blade Starter Kit';
+    protected $description = 'Install the Blade Starter Kit resources';
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $this->info('Installing Blade Starter Kit...');
+        // Publish stubs
+        $this->publishStubs();
+        
+        // Install NPM dependencies
+        $this->updateNodePackages(function ($packages) {
+            return [
+                'alpinejs' => '^3.4.2',
+                '@tailwindcss/forms' => '^0.5.2',
+                // Add any other dependencies
+            ] + $packages;
+        });
 
-        // Remove default resources
-        $this->removeDefaultResources();
-
-        // Install starter kit
-        (new StarterKit)->install();
-
-        $this->info('Blade Starter Kit installed successfully.');
-        $this->newLine();
-        $this->comment('Please execute the "npm install && npm run dev" command to build your assets.');
-
-        return Command::SUCCESS;
+        // Configure Tailwind
+        $this->installTailwindConfiguration();
+        
+        // Update Routes
+        $this->replaceInFile(
+            '// Add your routes here...',
+            file_get_contents(__DIR__.'/../../stubs/routes/web.php'),
+            base_path('routes/web.php')
+        );
+        
+        // Success message
+        $this->info((new StarterKit)->installationSummary());
+        
+        return self::SUCCESS;
     }
 
     /**
-     * Remove Laravel's default resources.
+     * Publish stubs to the application.
      */
-    protected function removeDefaultResources(): void
+    protected function publishStubs(): void
     {
-        $this->info('Removing default resources...');
+        $this->callSilent('vendor:publish', [
+            '--tag' => 'blade-starter-kit-stubs',
+            '--force' => true,
+        ]);
+    }
 
-        $filesystem = new \Illuminate\Filesystem\Filesystem;
-
-        // Remove welcome view
-        if ($filesystem->exists(resource_path('views/welcome.blade.php'))) {
-            $filesystem->delete(resource_path('views/welcome.blade.php'));
+    /**
+     * Update NPM dependencies in the package.json file.
+     */
+    protected function updateNodePackages(callable $callback): void
+    {
+        if (!file_exists(base_path('package.json'))) {
+            return;
         }
+
+        $packages = json_decode(file_get_contents(base_path('package.json')), true);
+        $packages['devDependencies'] = $callback($packages['devDependencies'] ?? []);
+        file_put_contents(
+            base_path('package.json'),
+            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
+        );
+    }
+
+    /**
+     * Configure Tailwind CSS.
+     */
+    protected function installTailwindConfiguration(): void
+    {
+        copy(__DIR__.'/../../stubs/tailwind.config.js', base_path('tailwind.config.js'));
+        copy(__DIR__.'/../../stubs/postcss.config.js', base_path('postcss.config.js'));
+    }
+
+    /**
+     * Replace a string in a file.
+     */
+    protected function replaceInFile($search, $replace, $path): void
+    {
+        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
 }

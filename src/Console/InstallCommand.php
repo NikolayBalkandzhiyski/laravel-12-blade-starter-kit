@@ -5,6 +5,7 @@ namespace NikolayBalkandzhiyski\BladeStarterKit\Console;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use NikolayBalkandzhiyski\BladeStarterKit\StarterKit;
+use NikolayBalkandzhiyski\BladeStarterKit\StubInstaller;
 
 class InstallCommand extends Command
 {
@@ -43,36 +44,49 @@ class InstallCommand extends Command
     {
         $this->info('Installing Blade Starter Kit...');
 
-        // Publish stubs
-        $this->publishStubs();
+        try {
+            // Ensure basic structure exists
+            $this->ensureApplicationExists();
 
-        // Install NPM dependencies
-        $this->updateNodePackages(function ($packages) {
-            return [
-                'alpinejs' => '^3.4.2',
-                '@tailwindcss/forms' => '^0.5.2',
-                'tailwindcss' => '^3.1.0',
-                'autoprefixer' => '^10.4.2',
-                'postcss' => '^8.4.6',
-            ] + $packages;
-        });
+            // Publish stubs
+            $this->publishStubs();
 
-        // Configure Tailwind
-        $this->installTailwindConfiguration();
+            // Install NPM dependencies
+            $this->updateNodePackages(function ($packages) {
+                return [
+                    'alpinejs' => '^3.4.2',
+                    '@tailwindcss/forms' => '^0.5.2',
+                    'tailwindcss' => '^3.1.0',
+                    'autoprefixer' => '^10.4.2',
+                    'postcss' => '^8.4.6',
+                ] + $packages;
+            });
 
-        // Update Routes
-        if ($this->files->exists(base_path('routes/web.php'))) {
-            $this->replaceInFile(
-                '// Add your routes here...',
-                file_get_contents(__DIR__.'/../../stubs/routes/web.php'),
-                base_path('routes/web.php')
-            );
+            // Configure Tailwind
+            $this->installTailwindConfiguration();
+
+            // Success message
+            $this->info((new StarterKit)->installationSummary());
+
+            return self::SUCCESS;
+        } catch (\Exception $e) {
+            $this->error('Error installing Blade Starter Kit: '.$e->getMessage());
+
+            if ($this->getOutput()->isVerbose()) {
+                $this->error($e->getTraceAsString());
+            }
+
+            return self::FAILURE;
         }
+    }
 
-        // Success message
-        $this->info((new StarterKit)->installationSummary());
-
-        return self::SUCCESS;
+    /**
+     * Ensure a minimal Laravel application structure exists.
+     */
+    protected function ensureApplicationExists(): void
+    {
+        $this->info('Ensuring application structure...');
+        StubInstaller::install($this->files);
     }
 
     /**

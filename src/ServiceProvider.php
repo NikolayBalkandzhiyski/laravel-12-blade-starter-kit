@@ -22,10 +22,13 @@ class ServiceProvider extends BaseServiceProvider
 
         // Only register commands if we're in a Laravel application
         if (file_exists(base_path('artisan'))) {
-            // Register commands
-            $this->commands([
-                InstallCommand::class,
-            ]);
+            try {
+                $this->commands([
+                    InstallCommand::class,
+                ]);
+            } catch (\Exception $e) {
+                // Gracefully handle any errors during command registration
+            }
         }
     }
 

@@ -9,23 +9,38 @@ class ComposerScripts
      */
     public static function postAutoloadDump($event)
     {
-        // Only run Artisan commands if we're in a Laravel application
-        if (file_exists('./artisan')) {
-            require_once './vendor/autoload.php';
+        // We're only handling the package in development mode
+        // Skip any Laravel-specific operations when running composer update
 
-            $baseDir = dirname(dirname(__FILE__));
+        $event->getIO()->write('<info>Blade Starter Kit: Processing composer updates...</info>');
 
-            if (file_exists('./bootstrap/app.php')) {
-                $app = require_once './bootstrap/app.php';
-                $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+        // Don't try to run Laravel commands during regular composer operations
+        if (getenv('COMPOSER_DEV_MODE') !== '0' && ! file_exists('./vendor/laravel/framework')) {
+            $event->getIO()->write('<info>Blade Starter Kit: Skipping Laravel operations.</info>');
 
-                // Run package:discover, but catch failures
-                try {
+            return;
+        }
+
+        // Only try to run artisan commands in a Laravel context
+        if (! file_exists('./artisan')) {
+            return;
+        }
+
+        try {
+            if (file_exists('./bootstrap/app.php') && file_exists('./vendor/autoload.php')) {
+                require_once './vendor/autoload.php';
+
+                $app = require './bootstrap/app.php';
+
+                if ($app->bound('Illuminate\Contracts\Console\Kernel')) {
+                    $kernel = $app->make('Illuminate\Contracts\Console\Kernel');
                     $kernel->call('package:discover');
-                } catch (\Exception $e) {
-                    $event->getIO()->write('<error>Error running package:discover: '.$e->getMessage().'</error>');
+                    $event->getIO()->write('<info>Blade Starter Kit: Package discovery completed.</info>');
                 }
             }
+        } catch (\Throwable $e) {
+            // Just log the error, don't fail
+            $event->getIO()->write("<warning>Blade Starter Kit: {$e->getMessage()}</warning>");
         }
     }
 }

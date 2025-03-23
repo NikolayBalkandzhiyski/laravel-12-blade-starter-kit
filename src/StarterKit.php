@@ -25,8 +25,8 @@ class StarterKit
      */
     public function install(): void
     {
-        // Ensure we have a basic application structure
-        CreateApplication::ensure();
+        // Ensure application structure exists
+        StubInstaller::install($this->files);
 
         // Copy stubs
         $this->files->copyDirectory(__DIR__.'/../stubs', base_path());
@@ -43,15 +43,23 @@ class StarterKit
             ];
         });
 
-        // Install NPM dependencies
-        $this->runCommands(['npm install', 'npm run build']);
+        // Update routes/web.php - use custom method that's safer
+        $this->updateRoutesFile();
+    }
 
-        // Update routes/web.php
-        $this->replaceInFile(
-            '// Routes go here...',
-            $this->getRoutesFileContent(),
-            base_path('routes/web.php')
-        );
+    /**
+     * Update the routes file.
+     */
+    protected function updateRoutesFile(): void
+    {
+        $routesPath = base_path('routes/web.php');
+
+        if (! $this->files->exists($routesPath)) {
+            $this->files->put($routesPath, "<?php\n\nuse Illuminate\Support\Facades\Route;\n\n");
+        }
+
+        // Always append routes to the end of the file
+        $this->files->append($routesPath, "\n".$this->getRoutesFileContent());
     }
 
     /**

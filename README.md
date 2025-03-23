@@ -95,6 +95,14 @@ composer require nikolaybalkandzhiyski/laravel-12-blade-starter-kit
 php artisan blade-kit:install
 ```
 
+### Manual Installation
+
+If you encounter any issues with the automatic installation, you can use the manual installer:
+
+```bash
+php vendor/nikolaybalkandzhiyski/laravel-12-blade-starter-kit/install.php
+```
+
 After installation, compile your assets:
 
 ```bash
